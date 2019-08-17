@@ -27,6 +27,7 @@
     "sqlite3": "^4.0.9"
   },
   "devDependencies": {
-    "knex-cleaner": "^1.2.1"
+    "knex-cleaner": "^1.2.1",
+    "nodemon": "^1.19.1"
   }
 }
