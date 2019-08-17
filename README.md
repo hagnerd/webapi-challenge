@@ -24,15 +24,37 @@ In this challenge, create a web API around the following resources: `Projects` a
 
 Demonstrate your understanding of this Sprint's concepts by answering the following free-form questions. Edit this document to include your answers after each question. Make sure to leave a blank line above and below your answer so it is clear and easy to read by your project manager.
 
-- [ ] Mention two parts of Express that you learned about this week.
+- [x] Mention two parts of Express that you learned about this week.
 
-- [ ] Describe Middleware?
+This week when learning Express we learned about server side routing, which
+allows us to react when the user makes specific HTTP request types to URLs that
+match, and we also learned about Middleware which allows us to customize how we
+process speific requests.
 
-- [ ] Describe a Resource?
+- [x] Describe Middleware?
 
-- [ ] What can the API return to help clients know if a request was successful?
+Middleware in Express allows us to process specific request with customized
+behavior. For instance we might make a middleware to protect specific routes and
+make sure that a user is logged in first, or we might make a middleware that
+logs out all requests made to the server.
 
-- [ ] How can we partition our application into sub-applications?
+- [x] Describe a Resource?
+
+In REST architecture a Resource is any sort of data that you would typically
+perform CRUD operations on. For instance in an application you may have a User
+resource, as well as a Post resource.
+
+- [x] What can the API return to help clients know if a request was successful?
+
+Depending on what operation the user is performing you can return an HTTP status
+code, as well as JSON data or a server rendered web page.
+
+- [x] How can we partition our application into sub-applications?
+
+When using Express, you can use the Router API to split out your application by
+resources. For instance using our Users, and Posts resources as an example you
+can split the Users resource into its own Router file and the Posts resource
+into its own Router file.
 
 ## Project Setup
 
