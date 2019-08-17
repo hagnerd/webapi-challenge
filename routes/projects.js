@@ -85,7 +85,30 @@ router.post("/", validateProjectInput, async (req, res) => {
 });
 
 // updateProject by ID
-router.put("/:id", validateProjectId, (req, res) => {});
+router.put(
+  "/:id",
+  [validateProjectId, validateProjectInput],
+  async (req, res) => {
+    try {
+      const project = await Project.update(req.project.id, {
+        name: req.project.name,
+        description: req.project.description,
+        ...req.body
+      });
+
+      console.log(project);
+
+      res.status(200).json({
+        project
+      });
+    } catch (error) {
+      res.status(500).json({
+        errorMessage: "internal server error",
+        message: error.message
+      });
+    }
+  }
+);
 
 // deleteProject by ID
 router.delete("/:id", (req, res) => {});
