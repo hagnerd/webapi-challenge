@@ -3,6 +3,20 @@ const router = express.Router();
 
 const Project = require("../data/helpers/projectModel");
 
+function validateProjectInput(req, res, next) {
+  const { name, description } = req.body;
+
+  if (!name || !description) {
+    res.status(400).json({
+      message: "Please provide name and description"
+    });
+
+    return;
+  }
+
+  next();
+}
+
 // getAll
 router.get("/", async (_req, res) => {
   try {
@@ -44,7 +58,26 @@ router.get("/:id", async (req, res) => {
 });
 
 // createProject
-router.post("/", (req, res) => {});
+router.post("/", validateProjectInput, async (req, res) => {
+  const { name, description } = req.body;
+
+  try {
+    const project = await Project.insert({
+      name,
+      description,
+      completed: false
+    });
+
+    res.status(201).json({
+      project
+    });
+  } catch (error) {
+    res.status(500).json({
+      errorMessage: "Internal Server Error",
+      message: error.message
+    });
+  }
+});
 
 // updateProject by ID
 router.put("/:id", (req, res) => {});
