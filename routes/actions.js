@@ -1,5 +1,6 @@
 const express = require("express");
 const Action = require("../data/helpers/actionModel");
+const Project = require("../data/helpers/projectModel");
 
 const router = express.Router();
 
@@ -37,6 +38,35 @@ async function validateActionId(req, res, next) {
   }
 }
 
+async function validateActionInput(req, res, next) {
+  const { project_id, description, notes } = req.body;
+
+  if (!project_id || !description || !notes) {
+    res.status(400).json({
+      message: "Please provide a project_id, description, and notes"
+    });
+    return;
+  }
+
+  try {
+    const project = await Project.get(project_id);
+
+    if (!project) {
+      res.status(404).json({
+        message: "invalid project_id"
+      });
+      return;
+    }
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      errorMessage: "internal server error",
+      message: error.message
+    });
+  }
+}
+
 // getAllActions
 router.get("/", async (_req, res) => {
   try {
@@ -63,7 +93,20 @@ router.get("/:id", validateActionId, (req, res) => {
 });
 
 // createAction
-router.post("/", (req, res) => {});
+router.post("/", validateActionInput, async (req, res) => {
+  try {
+    const action = await Action.insert({ ...req.body, completed: false });
+
+    res.status(201).json({
+      action
+    });
+  } catch (error) {
+    res.status(500).json({
+      errorMessage: "internal server error",
+      message: error.message
+    });
+  }
+});
 
 // updateActionById
 router.put("/:id", (req, res) => {});
