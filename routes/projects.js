@@ -17,6 +17,29 @@ function validateProjectInput(req, res, next) {
   next();
 }
 
+async function validateProjectId(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const project = await Project.get(id);
+
+    if (!project) {
+      res.status(404).json({
+        message: "invalid project id"
+      });
+
+      return;
+    }
+
+    req.project = project;
+    next();
+  } catch (error) {
+    res.status(500).json({
+      errorMessage: "internal server error"
+    });
+  }
+}
+
 // getAll
 router.get("/", async (_req, res) => {
   try {
@@ -34,27 +57,9 @@ router.get("/", async (_req, res) => {
 });
 
 // getById
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const project = await Project.get(id);
-
-    if (!project) {
-      res.status(404).json({
-        message: "Project not found with that ID"
-      });
-    }
-
-    res.status(200).json({
-      project
-    });
-  } catch (error) {
-    res.status(500).json({
-      errorMessage: "Internal Server Error",
-      message: error.message
-    });
-  }
+router.get("/:id", validateProjectId, (req, res) => {
+  const { project } = req;
+  res.json({ project });
 });
 
 // createProject
@@ -80,7 +85,7 @@ router.post("/", validateProjectInput, async (req, res) => {
 });
 
 // updateProject by ID
-router.put("/:id", (req, res) => {});
+router.put("/:id", validateProjectId, (req, res) => {});
 
 // deleteProject by ID
 router.delete("/:id", (req, res) => {});
